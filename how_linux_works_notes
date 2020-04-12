@@ -1,0 +1,687 @@
+How Linux works 
+
+Chapter 2 Basic Commands and directory hierarchy.
+
+2.1
+The shell is one of the most important parts of a Unix system. A shell is a program that runs commands like the ones that users enter. The shell is also a programming environment. 
+A shell script is a text file that contain a sequence of shell commands.
+
+The bash or "Bourne-again shell" is the default shell on most Linux distros, and /bin/sh is normally a link to bash on a Linux system.
+
+*A command is an instruction telling a computer to do something. An argument is input data for a command. Standard output is the display screen by default. but it can be redirected to a file, printer, etc..
+
+*An argument is also called a command line argument, is a file or other data that is provided to a command in order for the command to use as its input.
+The following example, wc (whose default behavior is to count the number of lines, words and characters in text) has the arguments file1, file2 and file3.
+
+	$wc file1 file2 file3
+
+If an argument consists of two or more words separated by spaces, then it must be enclosed in quotes, so that the system will know that it is a single argument instead of multiple arguments.
+
+	$wc -wl "my file1" "my file2"
+	-w tells to count the number of words.. -l tells to count number of lines.
+
+*An option, also referred to a switch or flag, is a single-letter code that modifies the behavior of a command. In the case of multiple options, all the letters are placed adjacent to each other and can be in any order. The set of options is usually preceded by a single hyphen(-).
+
+COMMANDS: 
+echo:	-echo is a built-in command in the bash and C shells that writes its arguments to standard output.
+	$echo $SHELL --> /bin/bash
+
+cat:	-The cat command simply outputs the contents of one or more files, it is called cat because it performs concatenation when it prints the contents of more than one file.
+	$cat file1 file2...
+
+ls:	-The ls command lists the contents of a directory, The default is the current directory. Use ls -l for a detailed(long) list and ls -F to display file type information.
+	$ls -l 
+
+cp:	-cp in its simplest form copies files. e.x to copy file1 to file2..
+	$cp file1 file2
+	
+	to copy a number of file to a directory(folder) named dir, try this;
+	$cp file1 ....fileN dir
+
+touch:	-the touch command creates a file. If the file already exists it does not change it, but it does modify the file's time-stamp printed with the ls -l command.
+	$touch file
+
+
+rm:	-To delete a file, use rm. after you remove it, it's gone from your file system and generally cannot be undeleted.
+In order to delete directories it is necessary to use the 'r' option or 'R'.This option recursively removes directories and their contents in the argument list.
+
+
+NAVIGATING DIRECTORIES.
+The directory hierarchy of Unix starts at /, sometimes called the root directory. The directory separator is the (/) slash.
+
+When you refer to a file or directory, you specify a path or path-name. When a path starts with / such as /usr/lib, it's a full or absolute path.
+
+A path component identified by (..) two dots specifies the parent of a directory.Eg, if you're working in the /usr/lib, the path .. would refer to /usr.
+
+One dot(.) refers to the current directory. EG, if you're working in the /usr/lib, the path . is still /usr/lib. 
+
+A path not beginning with / is called a relative path. Most of the time we'll be working with relative path-names, because you'll be already in the directory you need to be.
+
+COMMANDS:
+
+cd:	-The cd command changes the shell's current working directory.
+	$cd dir
+
+mkdir:	-the mkdir command creates a new directory
+	$mkdir dir
+
+rmdir:	-the rmdir command removes a directory. If the directory is not empty use: $rm -rf dir , to delete a directory and its contents.
+The -r option specifies recursive, and the -f denotes to force delete operation. ***Don't use the -rf flags with globs such as (*) star, as this is one of the commands that can do serious damage if run as superuser.
+
+---Globbing and wild-cards.
+Globbing is a feature that helps matching a file and directory names. This is similar to the concept of wild-cards in other systems.
+The simplest of these is the *(glob) character, which tells the shell to match any number of arbitrary characters.
+
+	at*	-expands to all file-names that start with at
+	*at	-expands to all file-names that end with at
+	*at*	-expands to all file-names that contain at
+
+NOTE: If you're used to MS-DOS, you might find to type *.* to match all files. break this habit now. IN Linux and other versions of Unix. you must use the * to match all files. In the Unix shell *.* matches only files and directories containing the (.) dot character in their names. 
+Unix file-names DO NOT need extensions and usually do not carry them.
+
+
+---Intermediate commands:---
+
+grep:	-the grep command prints the lines from a file or input stream that match an expansion. For example to print the lines in the /etc/passwd file that contain "root", enter this;
+	
+	$grep root /etc/passwd
+
+Grep is handy when handling multiple files at once because it prints the file-name in addition to the matching line. EG. to check every file in /etc that contains the word root, you'd use:
+	$grep root /etc*
+
+grep options that are important are; grep -i (for case-insensitive matches) and -v (which inverts the search, that is prints files that don't match.
+*grep understands patterns known as "regular expressions". Regular expressions are more powerful than wild-card style patterns, and they have different syntax. There are two important things to remember about regular expressions.
+	1. .* matches any number of characters (line * in wild-cards)
+	2. . matches one arbitrary character
+
+
+less:	-The less command comes in handy when a file is really big or when a command's output is long and scrolls of the top of the screen.
+
+	$less /usr/share/dicty/words
+Using less you, you'll see one screenful at the time. press space-bar to go forward and b key to skip back. type q to quit.
+To search for text inside less, type /word, and to search backward type ?word. when you find a match type n to continue next search result.
+
+
+pwd	-The pwd(print working directory) simply outputs the name of the working directory.
+	If symbolic links are obscuring the true full path, use $pwd -P to eliminate this.
+
+diff	-command used to see the differences between two text files.
+	
+	$ diff file1 file2
+	output from diff -u is preferred when sending it to automated tools.
+
+
+file	-if you see a file and are unsure of its format, try using the file command to see if the system can guess.
+
+	$ file file
+
+find	-find is a command for walking the file hierarchy. IT can be used to find files and directories and perform subsequent operations on them. It supports searching by file, folder name, creation date, modification date, owner and permissions. 
+	
+	Find files in current directory
+	$find . -name file.txt
+
+	Find files using name and ignoring case
+	$find /home -iname file.txt
+
+	Find directories using name
+	$find / -type d -name folder1
+
+	Find all PHP files in a directory
+	$find . -type f -name "*.php"
+
+head and tail:	-head is used to show the first 10 lines of a file; tail shows the last 10 lines.
+	$head /etc/passwd
+	$tail /etc/passwd
+	
+	To change the number of lines to display use the -n option, where n is the number of lines you want to see.
+
+
+sort:	-the sort command quickly puts the lines of a text in alphanumeric order. If the file's lines start with numbers and you want to sort in numerical order, use the -n options. The -r option reverses the order of the sort.
+
+	$head /etc/passwd | sort
+	$head /etc/passwd | sort -r
+
+
+---Changing your password---
+Use the passwd command to change your password. you'll be asked for your old password and then prompted for the new one twice. 
+
+	$passwd
+	(current) UNIX password:
+	New UNIX password:
+
+The passwd command will try to enforce the use of strong passwords. this means it will refuse to accept passwords that are too short, are too similar to previous passwords, are dictionary words, or are too easily guessed.
+*IF you have superuser privileges, you can specify a username as an argument to the passwd command to set the password for another user. Other options available to superuser to allow account locking, password expiration and on...
+	
+	$ su - 
+	# passwd {user}
+	# changing password for {user}
+	# new password:
+	# retype new password:
+	# all authentications tokens updated successfully
+
+chsh: 	-you can change your shell with the chsh command, keep in mind that bash is the most used shell. you can find what shell you're using with the following command
+	$echo $SHELL --> /bin/bash
+
+
+Dot . files:
+The output of ls -a shows dot files. These are files and directories whose names begin with a dot(.) and are typically hidden files on your system. Common files are .bashrc and .login, and directories such as .ssh.
+
+
+Environment and Shell variables:
+The shell can store temporary  variables called "shell variables", containing the value of text strings. Shell variables are useful for keeping track of values in scripts, and some shell variables control the way the shell behaves.
+
+Environment variable is like a shell variable, but it's not specific to the shell. The main difference is that the operating system passes all your shell's environment variables to programs that the shell runs, whereas shell variables cannot be accessed in the commands you run.
+
+Environment variables are useful because many programs read them for configuration and options.
+
+
+The command Path:
+PATH is an environmental variable in Linux and Unix-like systems that tells the shell which directories to search for executable files(ready to run programs) in response to commands issued by and user.
+A user's PATH consists of a series of colon separated absolute paths(an address relative to the root directory), that are stored in plain text files.
+Whenever an user types a command at the command line that is not built into the shell or that does not include its absolute path and then presses enter key, the shell searches through those directories, which constitute the user's search path, until it finds an executable with that name.
+
+	$echo $PATH
+	/usr/local/bin:/usr/bin:/bin
+
+To tell the shell to look in more places for programs, change the PATH environment variable. 
+e.g to add a directory dir to the beginning of the path so that the shell looks in dir before looking in any of the other PATH directories...
+	$ PATH=dir:$PATH
+
+---2.10 Special characters---
+
+Character	name			uses
+----------------------------------------------------------------------------------
+*		asterisk/star		regular expression, glob character
+.		dot			current directory, file/hostname delimiter
+!		bang			negation, command history'
+|		pipe			command pipes
+/		forward(/)slash		directory delimiter, search command
+\		backlash(\)		literals, macros(NEVER DIRECTORIES!)
+$		dollar			Variable denotation, end of line
+'		tick,(single quote)	literal strings
+`		backtick, backquote	command substitution
+"		double-quote		semi-literal strings
+^		caret			negation, beginning of line
+~		tilde, squiggle		negations, directory shortcut
+#		hash, pound		comments, preprocessor, substitutions
+[]		square brackets		Ranges
+{}		braces curly brackets	statement blocks, ranges
+_		underscore		cheap sub for a space
+
+
+---Command line Editing----
+It's a good idea to ditch the arrow keys and learn control sequences instead.
+
+KESTROKE	ACTION
+-----------------------
+CTRL-B		Move the cursor left
+CTRL-F		move the cursor right
+CTRL-P		view the previous command
+CTRL-N		view the next command
+CTRL-A		move the cursor to the beginning of the line
+CTRL-E		move the cursor to the end of the line
+CTRL-W		Erase the preceding word
+CTRL-U		erase from cursor to beginning of line
+CTRL-K		erase cursor to end of line
+CTRL-Y		paste erased text (example, from CTRL-U)
+
+
+---Getting help----
+Linux comes with a wealth of documentation. For basic commands, the manual pages (or man pages) will tell you what you need to know. 
+	$man ls
+
+To search for a manual page by keyword, use the -k option
+	$man -k keyword
+
+To search for passwd in a specific section (5) in this case use:
+	$man 5 passwd
+
+To list man pages by section, 1 for example:
+	$man -k . | grep 1
+	Where dot(.) is a regex that means "any character"
+
+Man pages are referenced by numbered sections. When someone refers to a manual page, the section number appears in parentheses next to the name, like ping(8).
+
+List of man sections and their numbers'
+
+SECTION		DESCRIPTION
+---------------------------------------------------------------------------
+1		user commands
+2		system calls
+3		higher level Unix programming library documentation
+4		device interface and driver config
+5		file descriptors (system config files)
+6		Games
+7		file formats, conventions, and encoding
+8		system commands and servers
+
+
+Sections 1,5,7,8 should be good supplements. 
+The info command is way too verbose, just know that it exists.
+
+
+Shell input and output:
+To send the output command to a file instead of the terminal, use the > redirection character.
+	$command > file
+	The shell creates file if it does not exists. If the file exists, the shell (clobbers)erases the original file first. TO avoid clobbering/erasing, enter set -C in bash.
+
+To append the output to the file instead of overwriting it with the >> redirection syntax
+	$command >> file
+
+To send the standard input of a command to the standard input of another command, use the pipe character |.
+	$head /proc/cpuinfo 
+	$head /proc/cpuinfo | tr a-z A-Z
+
+	tr - command to translate or delete characters.
+
+--Standard Error---
+stderr; it's an additional output stream for diagnosis and debugging. 
+You can redirect the standard error if you like. For example, to send standard output to f and standard error to e, use the 2> syntax, like this:
+
+	$ls /ffffffffffffff > f 2> e
+
+	The number 2 specifies the stream ID that the shell modifies. Stream ID 1 is standard output(the default). 		and 2 is standard error.
+	You can send both standard output and standard error to the file named f, try this:
+	
+	$ls /fffffffffffff f 2>&1
+
+Input redirection:
+To channel a file to a program's standard input, use the < operator.
+	$head < /proc/cpuinfo
+
+
+---2.15 Anatomy of an UNIX error message---
+Most Unix programs generate and report the same basic error messages, here's an example that we'll dissect:
+
+	$ls /dsafsda
+	ls: cannot access /dsafsda: No such file or directory
+
+The components of this message are as such:
+* The program name, ls
+* The file-name, /dsafsda, which is more specific piece of information. There's a problem with this path.
+* The error No such file or directory, indicates the problem with the file-name
+
+Putting it together, you get something like, "ls" tried to open /dsafsda but couldn't because it doesn't exists.
+
+When troubleshooting errors, always address the first error first. 
+
+
+---Common errors-------
+
+No such file or directory: 
+This is the number one error. You tried to access a file that doesn't exists. You get it when you try to read a file that does not exists, try to change a dir that isn't there, when you try to write to a file in a directory that doesn't exists, and so on...
+
+File exists:
+You probably tried to create a file that already exists. This is common when you try to create a directory with the same name as a file.
+
+Not a directory, ls a directory:
+These messages pop up when you try to use a file as a directory or a directory as a file. for example.
+	$touch a
+	$touch a/b
+	touch: a/b: Not a directory
+	
+	The error message only applies to the a part of a/b. When encountered. find the path component that is being treated like a directory.
+
+No space left on device: You're out of space!
+
+Permission denied:
+You get this error when you attempt to read or write to a file or directory that you're not allowed to access. This error also shows when you try to execute a file that does not have the execute bit.
+
+Operation not permitted:
+This usually happens when you try to kill a process you don't own.
+
+Segmentation fault, Bus error:
+This error essentially means a bug in the program. The program tried to access a part of memory that is was not allowed to touch, and the operating system touched it. Similarly, a bus error means that the program tried to access some memory in a particular way that it shouldn't.
+
+
+---Listing and manipulating Processes---
+Recall that a process is a running program. Each process on the system has a numeric process ID(PID). For a list of running processes, just run the ps command.
+
+	$ps
+	PID	TTY	TIME 	COMMAND
+	3027	pts/1	0:00	bash
+	3571	pts/1	0:10	ps
+
+The fields are as follows:
+*PID	-The process ID
+*TTY	-The terminal device where the process is running.
+*STAT	-The process status that is, what the process is doing and where its memory resides. For example, S (means sleeping), and R (means running).
+*TIME	-The amount of CPU time in minutes and seconds that the process has used so far.
+*COMMAND -This might seem obvious, but be aware that a process can change this field from its original value.
+
+
+Command options
+ps command options:
+
+ps x	-show all of your running processes
+ps ax	-show all the process on the system, not just the ones you own.
+ps u	-Include more detailed information on the process
+ps w	-Show full command names, not just what fits on one line.
+
+ps u $$	-to inspect the current shell process, $$ evaluates to the current shell's PID.
+
+To locate the PID of processes use top and the lsof commands.
+
+
+--Killing processes---
+To terminate a process, send it a signal with the kill command. A signal is a message to a process from the kernel. When you run kill, you're asking the kernel to send a signal to another process. In most cases, all you need to do is this.
+	
+	$kill pid
+	There are many type of signals, the default is TERM, or terminate. You can send different signals by adding an extra option to kill. For example, to freeze a process instead of terminating it, use the STOP signal:
+
+	$kill -STOP pid
+
+	A stopped process is still in memory, ready to pick up where it left off. Use CONT signal to continue.
+
+	$kill -CONT pid
+
+NOTE: Using CTRL-C to terminate a process that is running in the current terminal is the same as using kill to end the process with the INT(interrupt) signal.
+
+The most brutal way to terminate a process is with the KILL signal. Other signals give a chance to clean up after itself, but KILLS does not. The OS terminates the process and forcibly removes it from memory. Use this as last resort.
+
+
+---Background processes---
+
+To get a shell prompt back while another program is busy executing, use the ampersand(&); this detaches the process from the shell and put it int he "background"
+
+	$gunzip largefile.gz &
+
+If a program freezes you can try (fg) to bring it back or terminate. 
+Use CTRL-L to redraw the screen.
+
+
+---File modes and permissions---
+
+Every Unix system has a set of permissions that decide whether you can read, write or run the file. $ls -l displays the permissions.
+
+-rw-rw-r-- 1 student3 student3   169 Apr  1 18:34 etc
+
+The file's mode represents the file's permissions, and some extra info. There are four parts to the mode.
+
+1. The first character is the file type. A dash(-) denotes a regulat file. Directories are denoted by (d). (There are other file types discussed in Device files chapter)
+The rest of the file's mode contain the permissions, which break down into: User, Group and other, IN THAT ORDER.
+
+	The rw- are the user permissions
+	The rw- are the group permissions
+	The r-- are the other permissions
+
+----------------------------------------------------------------
+r	-Means the file is readable
+-----------------------------------------------------------------
+w	-File is writable
+x	-Means the file is executable (you can run as a program)
+-	-means nothing
+-----------------------------------------------------------------
+Everyone else on the system has access according to the third set, The "Other" permissions set is also called world permissions.
+
+Some executable files have an s in the user permissions listing instead of an x. This indicates the executable is setuid; meaning that when you execute the program, it runs as though the file owner is the user instead of you.
+Many programs use this setid bit to run as root in order to get the privileges that need to change system files.
+
+
+----Modifying permissions----
+
+To change permissions, use the chmod command. 
+First, pick the permissions that you want to change, then pick the bit to change.
+	-To add group  (g)
+	-To add world (o) o for "other"
+	-To add user (u) file or directory owner
+	-(a) Short for all, combination of "u, g and o"
+
+	$chmod g+r file
+	$chmod o+r file
+	$chmod u+w file
+	$chmod a+r file
+To remove permissions use, example. g-r, or o-w
+ 
+You may see people changing permissions with numbers, as $chmod 644 file1 .This is called an absolute change because it sets all permission bits at once.
+This is called octal representation and there's a chart tot help you understand it.
+
+File modes in binary and octal:
+
+OCTAL	BINARY		FILE_MODE
+------------------------------------------
+O	000		---
+1	001		--x
+2	010		-w-
+3	011		-wx
+4	100		r--
+5	101		r-x
+6	110		rw-
+7	111		rwx
+
+Most common absolute set bits:
+----------------------------------------------------------------------------
+644 	110-100-100	rw- r-- r--	u:read/write, group:read, other:read
+600	110-000-000	rw- --- ---	u:r/w,	g:none,	o:none
+755	111-101-101	rwx r-x r-x	u:r/w/x	g:r/x,	o:r/x
+700	111-000-000	rwx --- ---	u:r/w/x	g:none,	o:none
+711	111-001-001	rwx --x --x	u:r/w/x	g:x	o:x
+
+
+NOte:  644,600 are used for files, 755, 700 are used for directories and programs and 711 is used for directories.
+
+Terms:
+r: read
+w: write
+x: execute
+-: none
+d: directory
+
+Note: You can list the content of a directory if it's readable, but you can only access a file in a directory if the directory is executable.
+
+Finally, you can specify a set of default permissions with the $ umask command. which applies a predefined set of permissions to any new file.
+To determine the umask value you want to set, subtract the value of the permissions you want from 666(for a file) or 777(for a directory). The remainder is the value to use with the umask command. 
+For example; if you want to change the default mode to 644(rw-r--r--), 666-644=022, which is the value you'd use as an argument to the umask command.
+
+
+To determine the umask value to set, use the following table: 
+
+---------------------------------------------------------------
+unmask Octal Value	File permissions	Dir permissions
+---------------------------------------------------------------
+0			rw-			rwx
+1			rw-			rw-
+2			r--			r-x
+3			r--			r--
+4			-w-			-wx
+5			-w-			-w-
+6			--x			--x
+7			---(none)		---(none)
+
+Eg. umask 000 sets the file permissions to rw- rw- rw-
+
+
+---Creating symbolic links---
+
+A symbolic link is a file that points to another file or directory, effectively creating an alias (like a shortcut in Windows.
+
+in long directory listing, symbolic links look like this, (notice the l as the file type in the file type mode)
+
+	lrwxrwxrwx. 1 student3 student3     8 Apr  7 16:38 link_to_nine -> sub_dir9
+
+If you try to access link_to_nine, the system give you sub_dir9 instead. Symbolic names and the paths to which they point don't have to mean anything. EG, sub_dir9 doesn't need to exist!
+
+Note: your system might have links that point to other links, which are called chained symbolic links.
+
+--To create a symolic links from target to linkname, use $ln -s
+
+	$ln -s target linkname
+
+The link-name argument is the name of the symbolic link, the target argument is the path of the file or directory the link points to, and the -s flag specifies a symbolic link.
+
+Warning: Don't forget the -s option when creating symbolic links, otherwise the system creates a hardlink, giving an additional real name to a single file. THe new file-name has the status of the old one; it points links directly to the file instead of to another file-name as a symbolic link does.
+
+Why would one use symbolic links?
+
+* To access a file from multiple locations without creating copies and without using much disk space.
+*Maintain different versions of a file while ensuring that any pointers to it always lead to the most recent or up-to-date version.
+*To move data off your main drive. to, say another drive without disrupting system or app functions.
+
+
+---Archiving and Compressing files---
+
+gzip:	- (GNU ZIP) is one of the current standard Unix compression programs.
+
+tar:	- since gzip does NOT create archives of file; it doesn't pack multiple files and directories into one file; use tar instead:
+
+	$ tar cvf archive.tar file1 file2
+
+file1, file2 are files to be archived.
+c flag is for creating
+v flag verbose diagnostic output
+f flag denotes option for tar to create, you must use this option followed by a file-name at all times, except with tape drives(why? ---find out)
+
+Note: To use standard input or output, enter (-)dash instead of the file-name.
+
+To unpack a tar file:
+
+	$ tar xvf archive.tar
+	$ tar xvf archive.tar -C dir_to_be_extracted/
+	
+x flag puts tar in extract mode
+v verbose
+f denotes tar file followed
+-C flag is used to extract file to a specific directory
+
+Note: Before unpacking, it's usually a good idea to check the contents of a .tar file with the table-of-contents mode by using the t flag. This verifies the archive's basic integrity and prints out the names of all files inside.
+Also; when unpacking consider the p option to preserve permissions(default option when working as the superuser)
+
+To unpack a compressed(.gz) archive, work from the right side to the left, get rid of the .gz and then worry about the tar, as follows:
+
+	$gunzip file.tar.gz
+	$tar xvf file.tar
+
+---zcat:
+
+THe above method isn't the fastest or the most efficient way to invoke tar on an uncompressed archive, and wastes kernel I/O time and disk space.
+Better way is to combine archival and compression functions with a pipeline. as follows:
+	$zcat file tar.gz | tar xvf -
+
+Because is so common to use zcat. you can use z as an option to automatically invoke gzip on the archive, this works both with creating an archive (-c) or extracting one (-x)
+for example:
+
+	$tar ztvf file.tar.gz
+
+Most Linux distributions come with zip and unzip programs that are compatible with the zip archives on Windows systems. 
+
+
+----Linux directory essentials
+
+The Filesystem Hierarchy Standard (FHS) defines the directory structure and directory contents in Linux distributions.
+IN FHS, all files and directories appear under the root directory /, even if they are stored on different physical or virtual devices. 
+Most of these directories exist in all Unix-like operating systems and are generally much the same way, however; these descriptors here are those specifically used for the FHS.
+
+/
+├── bin -> usr/bin
+├── boot
+├── dev
+├── etc 
+├── home
+├── lib -> usr/lib
+├── lib64 -> usr/lib64
+├── media
+├── mnt
+├── opt
+├── proc
+├── root
+├── run
+├── sbin -> usr/sbin
+├── srv
+├── sys
+├── tmp
+├── usr
+└── var
+
+DIRECTORY			DESCRIPTION
+-------------------------------------------------------------------------------------
+/ 	-Primary hierarchy root and root directory of the ENTIRE file system hierarchy
+
+/bin	-Essential command binaries that need to be available in single user mode; for all users e.g, cat, ls, cp					
+
+/boot	-Boot loader files, e.g. kernels, initrd
+
+/dev	-Device files, e.g. /dev/null, dev/disk0, dev/sda1, dev/tty, dev/random
+
+/etc	-Host specific system-wide configuration files, such as; user password, boot, device, networking and other setup files.
+
+/home	-Holds personal directories for regular users, Most UNIX installations conform to this standard.
+
+/lib	-Libraries essential for the binaries in /bin and /sbin
+
+/lib<qual> -Alternative format essential libraries.
+
+/media	-Mount points for removable media such as CD-ROMS
+
+/mnt	-Temporary mounted filesystems
+
+/opt	-Optional application software packages
+
+/proc	-Virtual filesystem providing process and kernel information as files. In Linux corresponds to a procfs mount. Generally automatically generated and populated by the system on the fly.
+
+/root	-Home directory for the root user
+
+/run	-Run-time variable data: information about the running system since last boot. e.g. currently logged-in users and running daemons.
+
+/sbin	-Essential system binaries. e.g. fsck, init, route
+
+/srv	-Site-specific data served by this system, such as data and scripts for web-servers, data offered by FTP servers and repositories for version control systems.
+
+/sys	-Contains information about devices, drivers and some kernel features.
+
+/tmp	-Temporary files (also see /var/tmp).Often not preserved between system reboots, and may be severely size restricted.
+
+/usr	-Secondary hierarchy for read-only user data; contains the majority of multi-user utilities and applications
+
+/var	-Variable files -files whose contend is expected to continually change during normal operation of the system --such as logs, spools files, and temporary e-mail files.
+
+
+---Kernel Location---
+
+On most Linux systems, the kernel is normally in /vmlinuz or /boot/vmlinuz. A boot loader loads this file into memory and sets it in motion when the system boots.
+Once the boot loader runs and sets the kernel in motion, the main kernel file is no longer used by the running system. However, you'll find many modules that the kernel can load and unload on demand during the course of normal system operation. Called "loadable kernel modules". they are located under /lib/modules.
+
+
+
+---Running commands as the Superuser---
+
+You should know how to run commands as the superuser. For this you can use the su command and enter the root password to start a root shell. This practice works, but it has certain disadvantages:
+	*You have no record of system-altering commands
+	*you have no record of the users who altered the system altering commands
+	*You don't have access to your normal shell environment
+	*You have to enter the root password.
+
+---sudo---
+
+Most distributions use a package called sudo to allow administrators to run commands as root when they are logged in as themselves. e.g. you can use vipw(chapter 7) to edit the /etc/passwd file like this:
+
+	$sudo vipw
+
+When you run this commands, sudo logs this action with the syslog service under the local2 facility. (See chapter7 for system logs)
+
+
+---/etc/sudoers---
+
+The system doesn't let just any user run commands as the superuser; you must configure the privileged users in your /etc/sudoers file.
+e.g, this file gives user1 and user2 the power to run any command as root without having to enter a password:
+
+	User_Alias ADMINS = user1, user2
+	
+	ADMINS ALL = NOPASSWD: ALL
+
+	root	ALL=(ALL) ALL
+
+The first line defines ADMINS user alias with the two users.
+
+THe second line grants the privileges. ALL = NOPASSWD part means the users in the ADMINS alias can use sudo to execute commands as root. The first ALL means any host, the first ALL means "any command".
+
+The third line means that the superuser may also use sudo to run any command on any host. The extra (ALL) means that the superuser may also run commands as any other user.
+
+Note: Use visudo command to edit /etc/sudoers. This command checks for file syntax errors after you save the file.
+
+
+
+
+
+
+
+
