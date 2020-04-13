@@ -68,7 +68,8 @@ mkdir:	-the mkdir command creates a new directory
 rmdir:	-the rmdir command removes a directory. If the directory is not empty use: $rm -rf dir , to delete a directory and its contents.
 The -r option specifies recursive, and the -f denotes to force delete operation. ***Don't use the -rf flags with globs such as (*) star, as this is one of the commands that can do serious damage if run as superuser.
 
----Globbing and wild-cards.
+
+---Globbing and wild-cards.----
 Globbing is a feature that helps matching a file and directory names. This is similar to the concept of wild-cards in other systems.
 The simplest of these is the *(glob) character, which tells the shell to match any number of arbitrary characters.
 
@@ -78,6 +79,7 @@ The simplest of these is the *(glob) character, which tells the shell to match a
 
 NOTE: If you're used to MS-DOS, you might find to type *.* to match all files. break this habit now. IN Linux and other versions of Unix. you must use the * to match all files. In the Unix shell *.* matches only files and directories containing the (.) dot character in their names. 
 Unix file-names DO NOT need extensions and usually do not carry them.
+
 
 
 ---Intermediate commands:---
@@ -142,7 +144,9 @@ sort:	-the sort command quickly puts the lines of a text in alphanumeric order. 
 	$head /etc/passwd | sort -r
 
 
+
 ---Changing your password---
+
 Use the passwd command to change your password. you'll be asked for your old password and then prompted for the new one twice. 
 
 	$passwd
@@ -167,7 +171,7 @@ Dot . files:
 The output of ls -a shows dot files. These are files and directories whose names begin with a dot(.) and are typically hidden files on your system. Common files are .bashrc and .login, and directories such as .ssh.
 
 
-Environment and Shell variables:
+---Environment and Shell variables:---
 The shell can store temporary  variables called "shell variables", containing the value of text strings. Shell variables are useful for keeping track of values in scripts, and some shell variables control the way the shell behaves.
 
 Environment variable is like a shell variable, but it's not specific to the shell. The main difference is that the operating system passes all your shell's environment variables to programs that the shell runs, whereas shell variables cannot be accessed in the commands you run.
@@ -175,7 +179,7 @@ Environment variable is like a shell variable, but it's not specific to the shel
 Environment variables are useful because many programs read them for configuration and options.
 
 
-The command Path:
+---The command Path:---
 PATH is an environmental variable in Linux and Unix-like systems that tells the shell which directories to search for executable files(ready to run programs) in response to commands issued by and user.
 A user's PATH consists of a series of colon separated absolute paths(an address relative to the root directory), that are stored in plain text files.
 Whenever an user types a command at the command line that is not built into the shell or that does not include its absolute path and then presses enter key, the shell searches through those directories, which constitute the user's search path, until it finds an executable with that name.
@@ -186,6 +190,8 @@ Whenever an user types a command at the command line that is not built into the 
 To tell the shell to look in more places for programs, change the PATH environment variable. 
 e.g to add a directory dir to the beginning of the path so that the shell looks in dir before looking in any of the other PATH directories...
 	$ PATH=dir:$PATH
+
+
 
 ---2.10 Special characters---
 
@@ -207,6 +213,7 @@ $		dollar			Variable denotation, end of line
 []		square brackets		Ranges
 {}		braces curly brackets	statement blocks, ranges
 _		underscore		cheap sub for a space
+
 
 
 ---Command line Editing----
@@ -274,13 +281,16 @@ To send the standard input of a command to the standard input of another command
 
 	tr - command to translate or delete characters.
 
+
+
 --Standard Error---
+
 stderr; it's an additional output stream for diagnosis and debugging. 
 You can redirect the standard error if you like. For example, to send standard output to f and standard error to e, use the 2> syntax, like this:
 
 	$ls /ffffffffffffff > f 2> e
 
-	The number 2 specifies the stream ID that the shell modifies. Stream ID 1 is standard output(the default). 		and 2 is standard error.
+	The number 2 specifies the stream ID that the shell modifies. Stream ID 1 is standard output(the default)and 2 is standard error.
 	You can send both standard output and standard error to the file named f, try this:
 	
 	$ls /fffffffffffff f 2>&1
@@ -684,4 +694,5 @@ Note: Use visudo command to edit /etc/sudoers. This command checks for file synt
 
 
 
+:w
 
