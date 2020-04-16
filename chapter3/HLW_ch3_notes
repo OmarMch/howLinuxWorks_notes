@@ -120,7 +120,17 @@ Two common terminal devices are /dev/tty1 (first virtual console) and /dev/pts/0
 THe /dev/tty device is the controlling terminal of the current process. If a program i currently reading from and writing to a terminal, this device is a synonym for that terminal .A process does not need to be attached to a terminal.
 
 
+---Display modes---
 
+Linux had two primary display modes: text mode and X window system server.
+
+If you want to see your text console after your system boots, press CTRL-ALT-F1. To return to the x11 session, press ALT-F2, ALT-F3, and so on until you get to the X session.
+
+If you run into trouble switching consoles, you can try to force the system to chaneg consoles with the chvt command. E.g , to switch to tty1, run the following as root.
+
+	#chvt 1
+
+take notes on 3.5 after done or when need udevdm
 
 
 
