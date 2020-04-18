@@ -1,0 +1,14 @@
+How Linux works
+
+Chapter 1 Notes:
+
+A Linux system has three main levels.
+	
+    1. The hardware at its base, HW includes memory, CPU, to perform computatio and to read to and write from memory.
+
+    2. The kernel, which is the core of the operating system- the kernel resides in memory as software, that tell the CPU what to do. The kernel manages the hardware and acts primarily as an interface between the hardware and any running program.
+
+    3. Processes -- the running programs that the kernel manages.Example is all Web servers run as user processes)
+
+
+
