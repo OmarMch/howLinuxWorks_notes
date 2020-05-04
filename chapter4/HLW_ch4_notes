@@ -1,0 +1,152 @@
+Chapter $ Disks and Filesystems:
+
+Typical schematic of a LInux disk:
+
+|------------------------------------------------------|
+|	PARTITION TABLE                                |
+|----|------------------------|-|-----------------|----|
+|    |     PARTITION          |	|    PARTITION    |    |
+|    |------------------------| |                 |    |
+|    |  |------------------|  | |                 |    |
+|    |  |FS Data structures|  | |                 |    |
+|    |  |------------------|  | |                 |    |
+|    |                        | |                 |    |
+|    |  |------------------|  | |                 |    |
+|    |  |FILE DATA         |  | |                 |    |
+|    |  |------------------|  | |                 |    |
+|    |------------------------| |-----------------|    |
+|------------------------------------------------------|
+
+* Partitions are subdivisions of the whole disk. On linux they're denoted with a number after the block device. /dev/sda1 /dev/sda2 /dev/sda3, for example.
+Partitions are defined on a small area of the disk called a partition table.
+
+    -MBR =Master boot record) partitioning is an old microsoft standard, supports primary, extended and logical partitions. The basic MBR limit is 4 primary partitions.
+If you want more, you can create an exteded partition and subdivide it into logical partitions.MRB offers no advantages over GPT, except thaT it's the only format from which old PC hardware can boot Windows, and it can't support disks bigger than 2TB.
+
+There is no name column in the output of parted -l on a MBR partiton scheme, as it is not supported.
+
+*A primary partition is a normal subdivision of the disk.
+
+*An extended partition can be subdivided into logical partitions that the OS would use as any other partition. (used because of the 4 primary limitations).
+You'll typically ignore extended partitions because you will only need to access the logical partitions inside it.
+
+
+    -GPT =GUID partition table) is a partitioning scheme that is part of the Unified Extensible Firmware Interface(UEFI) specification; it uses globally unique identifiers(GUIDs) or UUID in Linux, to define partitions and partition types. It is designed to succeed the MBR partitioning scheme.
+
+
+---Partitioning devices---
+
+Overview of Linux partitioning tools available.
+
+ *parted    =a text ased tool thaqt supports both MBR and GPT
+ *gparted    =A graphical version of parted
+ *fdisk    =the traditional text-based linux disk partitioning tool. fdisk does not support GPT.
+
+ *gdisk    =A version of fdisk that supports GTP but not MBR.  
+Because it supports both MBR and GPT, we can learn to use parted.
+
+NOte: Although parted can create and rezise filesystems, you shouldn;t use it for filesystem manipulation. The critical difference between partitioning and filesystem manipulation, is that: The partition table deficnes simple boundaries on the disk, whereas a filesystem is much more involved data system.
+
+ You can view your system's partition table wtih parted.
+
+ #parted -l
+
+Model: ATA SanDisk SSD PLUS (scsi)
+Disk /dev/sda: 120GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type      File system     Flags
+ 1      1049kB  3146kB  2097kB  primary
+ 2      3146kB  76.0GB  76.0GB  primary   ext4
+ 3      76.0GB  106GB   30.0GB  primary   ext4            boot
+ 4      106GB   120GB   14.0GB  extended
+ 5      106GB   114GB   8000MB  logical   linux-swap(v1)
+
+
+*NOte: The filesystem that parted lists is not necessarily the system ID defined in most MBR entries. The MBR system id is just a number, for example 83 is a Linux partition, and 82 is Linux swap. Therefore, parted attempts to determin e a filesystem on its own. 
+If you must absolutely know the system id for an MBR, use #fdisk -l
+
+Initial kernel read---
+
+NOte: Both fdisk and parted modify the partitions in user space; no need to provide kernel support fro rewriting partition tables because user space can read and modify all of a block device.
+
+When initially reading the MBR table, Linux kernel produces the following debugging output, (viewed with dmesg)
+
+	sda: sda1 sda2 < sda5 >
+The sda2 < sda5> output indicates that /dev/sda2 is an extended partition containing one logical partition, /dev/sda5.
+
+---Changing partition tables---
+
+When altering partition tables keep the following in mind:
+
+ *Changing the partition table makes it quite hard to recover data on partitions that you delete because it changes the initial point of reference for a filesystem.
+
+ *Ensure that no partitions on your target disk are currently in use. Most LInux distros automatically mount any detected filesystem.
+
+ *There is a major difference between the way fdisk and parted work. With fdisk, you design your new partition table before making the actual changes to the disk. With parted, partitions are created and modified as you ISSUE THE COMMANDS!
+
+ *To see the partition changes once done:
+  -use udevadm monitor --kernel   -to see changes in real time?
+  -Check /proc/partitions   for full partition info
+  -Check /sys/block/device/ for altered partition systems
+
+To force the kernel to reload the partition table on /dev/sdf for example:
+   #blockdev --rereadpt /dev/sdf
+
+---Solid State Disks---
+SSDs are radically different from spinning disks in terms of their access characteristics, for these, random access is not a problem since there's no head to sweep across a platter... but.
+One of the significant factors affecting the performance of SSDs is; partition alignment: When you read from an SSD you read in chuncks of 4096ytes at a time, the read must begin at a multiple of the same size. If your partition does not lie on a 4096byte boundary, you might have to do TWO reads instead of one.
+Parted and fdisk have built-in functionality to put partitions at proper offsets from the beginning of the disk.
+
+to check if your partition is aligned do:
+    #parted /dev/device
+     (parted)align check optimal 1(partition-number)
+
+    
+
+---Filesystems---
+* File system : is a form of database; it supplies the structure to transform a simple block device into a hierarchy of files and subdirectories that users can understand.
+
+Filesystem types:
+
+ *Fourth Extended Filesystem(ext4) is the current iteration of a line of filesystems native to LInux, supports a small cache outside the normal filesystem structure, to support data integrity and hasten booting. (ext2) was alongtime default and ext3 improved on ext2 to support for larger files and greater numer of subdirectories.
+
+There is certain amount of backward compatibility in the extended filesystem series:
+    you can mount ext2 or ext3 as each other.
+    you can mount ext2 and ext3 as ext4
+    you CANNOT mount ext4 as ext2 or ext3 
+
+ *ISO 9690 -CD-ROM standard
+ *FAT filesystems (msdos, vfat, umdos) Use vfat in order to get full access from Linux.
+
+ *HFS+ (APPLE standard)
+
+---CReating a filesystem---
+
+Once done with partitioning, you can create filesystems. AS with partitioning; filesystem creation is done in a user-space process that can access and manipulate a block device.
+The mkfs utility can create many kinds of filesystems: E.g to create an ext4 fs on /dev/sd2:
+
+    #mkfs -t ext4 /dev/sd2
+(-t =type of filesystem)
+THe mkfs program automatically determines the number of blocks in adevice and sets reasonable defaults.
+ *mkfs is only a frontend to a series of creation programs mkfs.fs(fs=Filesystem) So when you run mkfs -t ext4 ,in turn runs mkfs.ext4.
+ 
+*To inspect the mkfs* files type the following command.
+
+	$ls -l /sbin/mkfs.*
+
+-rwxr-xr-x. 1 root root  54048 Nov  8 17:28 /sbin/mkfs.cramfs
+-rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext2
+-rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext3
+-rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext4
+-rwxr-xr-x. 1 root root  40008 May 11  2019 /sbin/mkfs.fat
+-rwxr-xr-x. 1 root root 117120 Nov  8 17:28 /sbin/mkfs.minix
+lrwxrwxrwx. 1 root root      8 May 11  2019 /sbin/mkfs.msdos -> mkfs.fat
+lrwxrwxrwx. 1 root root      8 May 11  2019 /sbin/mkfs.vfat -> mkfs.fat
+-rwxr-xr-x. 1 root root 643024 Nov  8 17:53 /sbin/mkfs.xfs
+
+
+
+

@@ -1,7 +1,7 @@
 Chapter 3 Notes:
 
 
-The Unix system kernel presents many of the device I/O interfaces o user processes as files. These device files are sometiomes called "device nodes".
+The Unix system kernel presents many of the device I/O interfaces to user processes as files. These device files are sometiomes called "device nodes".
 Device files are in the /dev directory.
 
 	$ls -l /dev
@@ -52,7 +52,7 @@ It can be difficult to find the sysfs location of a device in /dev. Use the udev
 
 ---dd command and Devices---
 
-THe program dd is useful when working with block and character devices. The program's sole fucntion is to read from an intput or file stream and write to an output or file stream, doing some encoding along the way.
+THe program dd is useful when working with block and character devices. The program's sole function is to read from an intput or file stream and write to an output or file stream, doing some encoding along the way.
 dd copies data in blocks of a fized size. e.g
 
 	$dd if=/dev/zero of=new_file bs=1024 count=1
@@ -62,13 +62,13 @@ THe preceeding example copies a single 1024-byte block from /dev/zero (a contino
 
 Important dd options:
 
- *if=file    The input file. Default is standard input.
- *of=file    the output file. Default is the standard input
- *bs=size    the block size. dd reads and writes this many bytes of data at a time. To abbreviate chunks of data, you can use (b and k) to signify (bytes, kilobytes) respectively.
+ *if=file   -The input file. Default is standard input.
+ *of=file    -the output file. Default is the standard input
+ *bs=size    -the block size. dd reads and writes this many bytes of data at a time. To abbreviate chunks of data, you can use (b and k) to signify (bytes, kilobytes) respectively.
 
- *ibs=size,obs=size    The input and output block sizes. 
- *count=num    the total number of blocks to copy. You want dd to stop at a fixed point. Use count with the  skip=  parameter to copy a small piece from a large file or device.
- *num   Skip past the num blocks in the input file or stream and do not copy them to the output.
+ *ibs=size,obs=size    -The input and output block sizes. 
+ *count=num    -the total number of blocks to copy. You want dd to stop at a fixed point. Use count with the  skip=  parameter to copy a small piece from a large file or device.
+ *num   -Skip past the num blocks in the input file or stream and do not copy them to the output.
 
 *NOte: dd is very powerful and is easy to currupt files and data over careless mistakes. write data to a new file if you're not sure what it'll do.
 
@@ -97,11 +97,11 @@ To list the SCSI devices on your system use a utility that references sysfs.
 	[2:0:0:0]    disk    VMware,  VMware Virtual S 1.0   /dev/sda  
 	1		2				     3
 	
-* The first column ids the address of the device on the system.
+* The first column IDs the address of the device on the system.
 * second column describes what kind of device it is.
 * third column indicates where to find the device. (everything else is vendor information)
 
-NOte: LInux assigns devices to device files in the order in which its drivers encounter devices.
+NOte: Linux assigns devices to device files in the order in which its drivers encounter devices.
 
 
 PATA hard disks:
@@ -126,7 +126,8 @@ Linux had two primary display modes: text mode and X window system server.
 
 If you want to see your text console after your system boots, press CTRL-ALT-F1. To return to the x11 session, press ALT-F2, ALT-F3, and so on until you get to the X session.
 
-If you run into trouble switching consoles, you can try to force the system to chaneg consoles with the chvt command. E.g , to switch to tty1, run the following as root.
+If you run into trouble switching consoles, you can try to force the system to change consoles with the 
+chvt command. E.g , to switch to tty1, run the following as root.
 
 	#chvt 1
 
