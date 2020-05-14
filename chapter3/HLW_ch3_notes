@@ -1,7 +1,9 @@
-Chapter 3 Notes:
 
 
-The Unix system kernel presents many of the device I/O interfaces to user processes as files. These device files are sometiomes called "device nodes".
+CHAPTER 3 NOTES:
+
+
+The Unix system kernel presents many of the device I/O interfaces to user processes as files. These device files are sometimes called "device nodes".
 Device files are in the /dev directory.
 
 	$ls -l /dev
@@ -19,14 +21,14 @@ Character device: Character devices work with data streams. You can only read ch
 	$echo blah blah > /dev/null
 	The echo command sends characters to dev/null device,. In this case the data is discarded.
 
-Pipe device: Named pipes are like characted devices, with another process at the other end of the I/O stream instead of a kernel driver.
+Pipe device: Named pipes are like character devices, with another process at the other end of the I/O stream instead of a kernel driver.
 
-Socket device: Sockets are special purpose interfaces that are frequently used for interprocess communication. they're often found outside the /dev directory.
+Socket device: Sockets are special purpose interfaces that are frequently used for inter-process communication. they're often found outside the /dev directory.
 
 Note: Not all devices have device files. Network, interfaces don't have device files. You can interact with a network interface using a single character device, but it would be extremely difficult, so the kernel instead uses other I/O interfaces.
 
 
----The sysfs Device Path---
+---THE SYSFS DEVICE PATH--------------------------------------------------------
 
 The /dev Unix directory is a convenient way for processes to reference and interface with devices supported by the kernel, but is also a very simplistic scheme.
 The name /dev tells you little about the device, but another issue is that the kernel assigns devices in the order in which they are found, so a device may have different name between reboots.
@@ -50,30 +52,32 @@ It can be difficult to find the sysfs location of a device in /dev. Use the udev
 	$udevadm info --query=all --name=/dev/sda
 
 
----dd command and Devices---
+---dd COMMAND AND DEVICES-------------------------------------------------------
 
-THe program dd is useful when working with block and character devices. The program's sole function is to read from an intput or file stream and write to an output or file stream, doing some encoding along the way.
-dd copies data in blocks of a fized size. e.g
+The program dd is useful when working with block and character devices. The program's sole function is to read from an input or file stream and write to an output or file stream, doing some encoding along the way.
+dd copies data in blocks of a fixed size. e.g
 
 	$dd if=/dev/zero of=new_file bs=1024 count=1
 
-THe preceeding example copies a single 1024-byte block from /dev/zero (a continous stream of zero bytes) to new_file.
+The proceeding example copies a single 1024-byte block from /dev/zero (a continuous stream of zero bytes) to new_file.
 *dd formats is based on IBM job control language. You name an option and set its value with the equal sign.
 
 Important dd options:
 
- *if=file   -The input file. Default is standard input.
- *of=file    -the output file. Default is the standard input
- *bs=size    -the block size. dd reads and writes this many bytes of data at a time. To abbreviate chunks of data, you can use (b and k) to signify (bytes, kilobytes) respectively.
+	 *if=file   -The input file. Default is standard input.
+	 *of=file    -the output file. Default is the standard input
+	 *bs=size    -the block size. dd reads and writes this many bytes of data at a time. To abbreviate chunks of data, you can use (b and k) to signify (bytes, kilobytes) respectively.
 
- *ibs=size,obs=size    -The input and output block sizes. 
- *count=num    -the total number of blocks to copy. You want dd to stop at a fixed point. Use count with the  skip=  parameter to copy a small piece from a large file or device.
- *num   -Skip past the num blocks in the input file or stream and do not copy them to the output.
+	 *ibs=size,obs=size    -The input and output block sizes. 
 
-*NOte: dd is very powerful and is easy to currupt files and data over careless mistakes. write data to a new file if you're not sure what it'll do.
+	 *count=num   -the total number of blocks to copy. You want dd to stop at a fixed point. Use count with the  skip=  parameter to copy a small piece from a large file or device.
+ 
+	 *num   -Skip past the num blocks in the input file or stream and do not copy them to the output.
+
+Note: dd is very powerful and is easy to corrupt files and data over careless mistakes. write data to a new file if you're not sure what it'll do.
 
 
----Device Name summary---
+---DEVICE NAME SUMMARY----------------------------------------------------------
 
 To find the name of a device, here are some ways to find it out.
 
@@ -86,7 +90,7 @@ To find the name of a device, here are some ways to find it out.
 Note: The only reliable method is udev. 
 
 
----Hard disks--- /dev/sd*
+---HARD DISKS--- /dev/sd*
 
 Most hard disks attached to Linux correspond to device names with an "sd" prefix, such as /dev/sda, dev/sdb, and so on. These devices represent entire disks; the kernel makes separate device files, such as /dev/sda1 and /dev/sda2, for the partitions of a disk.
 
@@ -101,12 +105,12 @@ To list the SCSI devices on your system use a utility that references sysfs.
 * second column describes what kind of device it is.
 * third column indicates where to find the device. (everything else is vendor information)
 
-NOte: Linux assigns devices to device files in the order in which its drivers encounter devices.
+Note: Linux assigns devices to device files in the order in which its drivers encounter devices.
 
 
 PATA hard disks:
-These LInux block devices /dev/hda, /dev/hdb, dev/hdc are common in older versions of the kernel. These devices are "fixed assignent-based" on the master/slave devices on interfaces 0 and 1.
-NOte: at time you might find SATA drive recognized as "hd_", this means the SATA drive is running in compatibility mode which hinders performande. check BIOS.
+These LInux block devices /dev/hda, /dev/hdb, dev/hdc are common in older versions of the kernel. These devices are "fixed assignment-based" on the master/slave devices on interfaces 0 and 1.
+NOte: at time you might find SATA drive recognized as "hd_", this means the SATA drive is running in compatibility mode which hinders performance. check BIOS.
 
 CD and DVD drives:
 THese devices are also SCSI devices, /dev/sr0, /dev/sr1 and so on. THe /dev/sr* devices are read-only, while /dev/sg0 have write and rewrite capabilities.
@@ -117,10 +121,11 @@ Terminals are devices for moving characters between a user process and an I/O de
 Pseudoterminal devices are emulated terminals, but rather than talk to hardware, the kernel presents the I/O interface to a piece of software, such as the shell terminal window where you type your commands.
 
 Two common terminal devices are /dev/tty1 (first virtual console) and /dev/pts/0 (the first pseudoterminal device)
-THe /dev/tty device is the controlling terminal of the current process. If a program i currently reading from and writing to a terminal, this device is a synonym for that terminal .A process does not need to be attached to a terminal.
+
+The /dev/tty device is the controlling terminal of the current process. If a program is currently reading from and writing to a terminal, this device is a synonym for that terminal. A process does not need to be attached to a terminal.
 
 
----Display modes---
+---DISPLAY MODES----------------------------------------------------------------
 
 Linux had two primary display modes: text mode and X window system server.
 

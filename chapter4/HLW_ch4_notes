@@ -1,6 +1,8 @@
-Chapter $ Disks and Filesystems:
 
-Typical schematic of a LInux disk:
+
+CHAPTER 4 DISKS AND FILESYSTEMS:
+
+Typical schematic of a Linux disk:
 
 |------------------------------------------------------|
 |	PARTITION TABLE                                |
@@ -17,13 +19,16 @@ Typical schematic of a LInux disk:
 |    |------------------------| |-----------------|    |
 |------------------------------------------------------|
 
-* Partitions are subdivisions of the whole disk. On linux they're denoted with a number after the block device. /dev/sda1 /dev/sda2 /dev/sda3, for example.
 Partitions are defined on a small area of the disk called a partition table.
+* Partitions are subdivisions of the whole disk. On Linux they're denoted with a number after the block device. /dev/sda1 /dev/sda2 /dev/sda3, for example.
 
-    -MBR =Master boot record) partitioning is an old microsoft standard, supports primary, extended and logical partitions. The basic MBR limit is 4 primary partitions.
-If you want more, you can create an exteded partition and subdivide it into logical partitions.MRB offers no advantages over GPT, except thaT it's the only format from which old PC hardware can boot Windows, and it can't support disks bigger than 2TB.
+	-MBR =Master boot record) partitioning is an 1981 Microsoft standard, supports primary, extended and logical partitions.
+	-The basic MBR limit is 4 primary partitions.
+	-If you want more, n four partitions, you can create an extended partition and subdivide it into logical partitions.
+	-MRB offers no advantages over GPT, except that it's the only format from which old PC hardware can boot Windows.
+	-Supports only a max size of 2TB.
 
-There is no name column in the output of parted -l on a MBR partiton scheme, as it is not supported.
+There is no name column in the output of parted -l on a MBR partition scheme, as it is not supported.
 
 *A primary partition is a normal subdivision of the disk.
 
@@ -31,71 +36,143 @@ There is no name column in the output of parted -l on a MBR partiton scheme, as 
 You'll typically ignore extended partitions because you will only need to access the logical partitions inside it.
 
 
-    -GPT =GUID partition table) is a partitioning scheme that is part of the Unified Extensible Firmware Interface(UEFI) specification; it uses globally unique identifiers(GUIDs) or UUID in Linux, to define partitions and partition types. It is designed to succeed the MBR partitioning scheme.
+    -GPT =GUID partition table) is a partitioning scheme that is part of the Unified Extensible Firmware Interface(UEFI) specification.
+    - it uses globally unique identifiers(GUIDs) or UUID in Linux, to define partitions and partition types. 
+    -It is designed to succeed the MBR partitioning scheme.
+    -has a maximum of 128 partitions.
+    -no need for primary, extended, partitions are just partitions.
 
 
----Partitioning devices---
+---PARTITIONING DEVICES---------------------------------------------------------
 
 Overview of Linux partitioning tools available.
 
- *parted    =a text ased tool thaqt supports both MBR and GPT
- *gparted    =A graphical version of parted
+ *parted   =a text based tool that supports both MBR and GPT
+ *gparted  =A graphical version of parted
  *fdisk    =the traditional text-based linux disk partitioning tool. fdisk does not support GPT.
 
  *gdisk    =A version of fdisk that supports GTP but not MBR.  
 Because it supports both MBR and GPT, we can learn to use parted.
 
-NOte: Although parted can create and rezise filesystems, you shouldn;t use it for filesystem manipulation. The critical difference between partitioning and filesystem manipulation, is that: The partition table deficnes simple boundaries on the disk, whereas a filesystem is much more involved data system.
+NOte: Although parted can create and re-size filesystems, you shouldn't use it for filesystem manipulation. The critical difference between partitioning and filesystem manipulation, is that: The partition table defines simple boundaries on the disk, whereas a filesystem is much more involved data system.
 
- You can view your system's partition table wtih parted.
+ You can view your system's partition table with parted.
 
  #parted -l
 
-Model: ATA SanDisk SSD PLUS (scsi)
-Disk /dev/sda: 120GB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags: 
+	Model: ATA SanDisk SSD PLUS (scsi)
+	Disk /dev/sda: 120GB
+	Sector size (logical/physical): 512B/512B
+	Partition Table: msdos
+	Disk Flags: 
 
-Number  Start   End     Size    Type      File system     Flags
- 1      1049kB  3146kB  2097kB  primary
- 2      3146kB  76.0GB  76.0GB  primary   ext4
- 3      76.0GB  106GB   30.0GB  primary   ext4            boot
- 4      106GB   120GB   14.0GB  extended
- 5      106GB   114GB   8000MB  logical   linux-swap(v1)
+	Number  Start   End     Size    Type      File system     Flags
+	 1      1049kB  3146kB  2097kB  primary
+	 2      3146kB  76.0GB  76.0GB  primary   ext4
+	 3      76.0GB  106GB   30.0GB  primary   ext4            boot
+	 4      106GB   120GB   14.0GB  extended
+	 5      106GB   114GB   8000MB  logical   linux-swap(v1)
 
 
-*NOte: The filesystem that parted lists is not necessarily the system ID defined in most MBR entries. The MBR system id is just a number, for example 83 is a Linux partition, and 82 is Linux swap. Therefore, parted attempts to determin e a filesystem on its own. 
+*Note: The filesystem that parted lists is not necessarily the system ID defined in most MBR entries. The MBR system id is just a number, for example 83 is a Linux partition, and 82 is Linux swap. Therefore, parted attempts to determine a filesystem on its own. 
 If you must absolutely know the system id for an MBR, use #fdisk -l
+
+
+
+
+--------------------------------------------------------------------------------
+RHEL 8 CH 14 NOTES ADDITION:
+
+Parted is the default utility for partitioning disks on RHEL 8.
+
+Procedure Overview:
+
+* parted /dev/sdb
+  *print will show the current partition table
+  *mklabel msdos|gpt   (sets partition table type)
+  *mkpart part-type name fs-type start end
+   
+       -part type only applies to MBR and sets partition to primary/logical/extended 
+	name:  arbitrary name required for GPT
+       -fs-type: does NOT modify the filesystem, filesystem metadata.
+       -start end: specific start and end, counting from the beginning of the disk.
+
+       e.g. mkpart primary 1024MiB 2048MiB (MiB= mebibyte =2^20 1048bytes)
+       
+       -print to verify creating of system partition
+       -quit to exit the parted shell
+       -udevadm settle  -to ensure that the new partition device is created
+       -cat /proc/partitions to verify the creation of the partition
+
+
+* fdisk /dev/sdb (MBR ONLY)
+  *m for menu
+  *n for creating new partition
+  *p prints partitions
+  *w writes changes
+  *q quits
+
+  e.g: 
+  Command (m for help): n
+  Partition type
+	p   primary (0 primary, 0 extended, 4 free)
+	e   extended (container for logical partitions)
+  Select (default p): p
+  Partition number (1-4, default 1): 1
+  First sector (2048-60555263, default 2048): 2048 
+  Last sector, +sectors or +size{K,M,G,T,P} (2048-60555263, default 60555263): +1G
+
+  Created a new partition 1 of type 'Linux' and of size 1 GiB.
+  
+Note:IN fdisk you might get: device busy error when writing:
+Use the partprobe command to make use all recent changes to disk are updated to the kernel partition table.
+table
+
+
+
+---MAKING FILE SYSTEMS: (to be added notes)
+
+ 
+
+
+END RHCSA8 NOTES:
+--------------------------------------------------------------------------------
+
+
+
+
+
 
 Initial kernel read---
 
-NOte: Both fdisk and parted modify the partitions in user space; no need to provide kernel support fro rewriting partition tables because user space can read and modify all of a block device.
+Note: Both fdisk and parted modify the partitions in user space; no need to provide kernel support for rewriting partition tables because user space can read and modify all of a block device.
 
 When initially reading the MBR table, Linux kernel produces the following debugging output, (viewed with dmesg)
 
 	sda: sda1 sda2 < sda5 >
 The sda2 < sda5> output indicates that /dev/sda2 is an extended partition containing one logical partition, /dev/sda5.
 
----Changing partition tables---
+---CHANGING PARTITION TABLES----------------------------------------------------
 
 When altering partition tables keep the following in mind:
 
  *Changing the partition table makes it quite hard to recover data on partitions that you delete because it changes the initial point of reference for a filesystem.
 
- *Ensure that no partitions on your target disk are currently in use. Most LInux distros automatically mount any detected filesystem.
+ *Ensure that no partitions on your target disk are currently in use. Most Linux distros automatically mount any detected filesystem.
 
  *There is a major difference between the way fdisk and parted work. With fdisk, you design your new partition table before making the actual changes to the disk. With parted, partitions are created and modified as you ISSUE THE COMMANDS!
 
  *To see the partition changes once done:
-  -use udevadm monitor --kernel   -to see changes in real time?
-  -Check /proc/partitions   for full partition info
-  -Check /sys/block/device/ for altered partition systems
+	-use udevadm monitor --kernel   =to see changes in real time?
+       	-Check /proc/partitions   =for full partition info
+	-Check /sys/block/device/  =for altered partition systems
 
 To force the kernel to reload the partition table on /dev/sdf for example:
-   #blockdev --rereadpt /dev/sdf
+	#blockdev --rereadpt /dev/sdf
 
----Solid State Disks---
+
+---SOLID STATE DISKS------------------------------------------------------------
+
 SSDs are radically different from spinning disks in terms of their access characteristics, for these, random access is not a problem since there's no head to sweep across a platter... but.
 One of the significant factors affecting the performance of SSDs is; partition alignment: When you read from an SSD you read in chuncks of 4096ytes at a time, the read must begin at a multiple of the same size. If your partition does not lie on a 4096byte boundary, you might have to do TWO reads instead of one.
 Parted and fdisk have built-in functionality to put partitions at proper offsets from the beginning of the disk.
@@ -106,46 +183,326 @@ to check if your partition is aligned do:
 
     
 
----Filesystems---
-* File system : is a form of database; it supplies the structure to transform a simple block device into a hierarchy of files and subdirectories that users can understand.
+---FILESYSTEMS------------------------------------------------------------------
+
+* File system : is a form of database; it supplies the structure to transform a simple block device into a hierarchy of files and sub-directories that users can understand.
 
 Filesystem types:
 
- *Fourth Extended Filesystem(ext4) is the current iteration of a line of filesystems native to LInux, supports a small cache outside the normal filesystem structure, to support data integrity and hasten booting. (ext2) was alongtime default and ext3 improved on ext2 to support for larger files and greater numer of subdirectories.
+ *Fourth Extended Filesystem(ext4) is the current iteration of a line of filesystems native to Linux, supports a small cache outside the normal filesystem structure, to support data integrity and hasten booting. (ext2) was a longtime default and ext3 improved on ext2 to support for larger files and greater number of sub-directories.
 
 There is certain amount of backward compatibility in the extended filesystem series:
-    you can mount ext2 or ext3 as each other.
-    you can mount ext2 and ext3 as ext4
-    you CANNOT mount ext4 as ext2 or ext3 
+	you can mount ext2 or ext3 as each other.
+	you can mount ext2 and ext3 as ext4
+	you CANNOT mount ext4 as ext2 or ext3 
 
  *ISO 9690 -CD-ROM standard
  *FAT filesystems (msdos, vfat, umdos) Use vfat in order to get full access from Linux.
 
  *HFS+ (APPLE standard)
 
----CReating a filesystem---
+
+
+---CREATING A FILESYSTEM--------------------------------------------------------
 
 Once done with partitioning, you can create filesystems. AS with partitioning; filesystem creation is done in a user-space process that can access and manipulate a block device.
 The mkfs utility can create many kinds of filesystems: E.g to create an ext4 fs on /dev/sd2:
 
-    #mkfs -t ext4 /dev/sd2
-(-t =type of filesystem)
-THe mkfs program automatically determines the number of blocks in adevice and sets reasonable defaults.
- *mkfs is only a frontend to a series of creation programs mkfs.fs(fs=Filesystem) So when you run mkfs -t ext4 ,in turn runs mkfs.ext4.
+	#mkfs -t ext4 -L PART2 /dev/sd2
+ 	(-t type of filesystem, -L file-system label)
+ 	The mkfs program automatically determines the number of blocks in a device and sets 	reasonable defaults.
  
-*To inspect the mkfs* files type the following command.
+*mkfs is only a frontend to a series of creation programs mkfs.fs(fs=Filesystem) So when you run mkfs -t ext4 ,in turn runs mkfs.ext4.
+ 
+ *To inspect the mkfs* files type the following command.
 
 	$ls -l /sbin/mkfs.*
 
--rwxr-xr-x. 1 root root  54048 Nov  8 17:28 /sbin/mkfs.cramfs
--rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext2
--rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext3
--rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext4
--rwxr-xr-x. 1 root root  40008 May 11  2019 /sbin/mkfs.fat
--rwxr-xr-x. 1 root root 117120 Nov  8 17:28 /sbin/mkfs.minix
-lrwxrwxrwx. 1 root root      8 May 11  2019 /sbin/mkfs.msdos -> mkfs.fat
-lrwxrwxrwx. 1 root root      8 May 11  2019 /sbin/mkfs.vfat -> mkfs.fat
--rwxr-xr-x. 1 root root 643024 Nov  8 17:53 /sbin/mkfs.xfs
+ -rwxr-xr-x. 1 root root  54048 Nov  8 17:28 /sbin/mkfs.cramfs
+ -rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext2
+ -rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext3
+ -rwxr-xr-x. 4 root root 173744 Nov  8 11:21 /sbin/mkfs.ext4
+ -rwxr-xr-x. 1 root root  40008 May 11  2019 /sbin/mkfs.fat
+ -rwxr-xr-x. 1 root root 117120 Nov  8 17:28 /sbin/mkfs.minix
+ lrwxrwxrwx. 1 root root      8 May 11  2019 /sbin/mkfs.msdos -> mkfs.fat
+ lrwxrwxrwx. 1 root root      8 May 11  2019 /sbin/mkfs.vfat -> mkfs.fat
+ -rwxr-xr-x. 1 root root 643024 Nov  8 17:53 /sbin/mkfs.xfs
+
+
+---MOUNTING A FILESYSTEM--------------------------------------------------------
+
+On Unix, the process of attaching a filesystem is called mounting.
+
+ In order to mount a filesystem, you must know the following:
+ 
+  *the filestytem's device (such as a disk partition)
+  *the filesystem type
+  *the mount point --that is, the place on the current system's directory where the filesystem will be attached. The mount point is a normal system directory. The mount point need not be directly below / ,it may be anywhere on the system.
+
+ *To learn the current filesystem status of your system, run the mount command:
+
+ $mount
+ /dev/sda1 on / type ext4 (rw,errors=remount-ro)
+ proc on /proc type proc (rw,noexec,nosuid,nodev)
+--snip-- 
+
+Each line corresponds to one currently mounted filesystem with items in this order. (proc is not a real device but a stand-in for real device names, because these special-purpose filesystems do not need devices.
+
+	*the word on
+	*the mount point
+	*the word type
+	*the filesystem type, in the form of a short identifier
+	*mount point in parentheses.
+
+ To mount a filesystem with mount command: need, filesystem type, device, and desired mount point.
+  
+ e.g. To mount ext4 filesystem /dev/sdf2 on /home/extra, do:
+    
+	#mount -t ext4 /dev/sdf2 /home/extra 
+
+Note: Normally don't specify the -t(filesystem type) option, mount can figure it out for you. Sometimes necessary to distinguish between various FAT style filesystems.
+
+ *To umount (detach a filesystem use the umount command:
+  
+	#umount mountpoint
+
+	You can also umount a filesystem with its device instead of its mountpoint
+
+	#umount /dev/sdb1
+
+
+FILESYSTEM UUID:----------------------------------------------------------------
+
+Since device names can change because they depend on the order which the kernel finds devices. To solve this problem you can identify and mount the filesystems by their UUID(universally unique identifier), The UUID is a type of serial number, and each one should be different.
+To view a list of devices and their UUID on your system, use $blkid(block id program)
+
+	#blkid
+	-->/dev/sda1: UUID="92c8b117-3ff9-4f28-cut---" TYPE="xfs" PARTUUID="fcd44696-01"
+	/dev/sda2: UUID="e3377545-23c3-4039---cut--" TYPE="swap" PARTUUID="fcd44696-02"
+
+Note:The Linux native partitions all have UUID(EXT2-4), FAT partitions don't have one but you can reference them through their serial number.
+
+To mount a partition using their UUID do so:
+	
+	#mount UUID=92c8b117-3ff9-4f28-cut--- /home/extra
+
+It's still important to understand UUID, For one thing they're the preferred way to automatically mount filesystems in /etc/fstab at BOOT time.
+
+
+?What is the difference between partition NAME and partition Label (in gparted /parted)?
+
+	A: 	A partition name is a UUID name given in the GPT, it's external to the partition itself.
+		A partition Label is stored inside the filesystem, for ext-filesystems, this is the label 			you can manipulate with e2label.
+
+		You can then use filesystem labels or partition names to mount the filesystems.
+	
+		$sudo mount -L GPART1 /mount/point  (-L label)
+
+
+--DISK BUFFERING------------      
+
+----------------------------------------------------
+
+Linux like other versions of Unix, buffers writes to the disk, This means that kernel usually doesn't immediately write changes to filesystems when processes request changes. Instead stores changes in RAM until the kernel makes changes to the disk.
+Therefore; if one or more processes repeatedly access a file, the kernel doesn't have to go to the disk again and again, it can simply read from the cache and save time.
+
+
+---FILESYSTEM MOUNT OPTIONS---
+
+The options in the mount command are staggering, refer to man mount to see. We'll cover the most useful options in this section.
+Options fall in two categories: 1. general, 2. filesystem specific ones.
+
+To activate a filesystem option, use the -o switch followed by the option.
+
+	Short options:
+	-r  =Mounts the filesystem in read only mode, This has numerous uses from write protection to bootstrapping.
+
+	-n  =Ensures that mount does not try to update the system run-time mount database, /etc/mtab. The mount operation fails when it cannot write to this file, which is important at boot time because the root partition is read-only at first. 
+
+	-t  =the -t option specifies the filesystem type
+
+	LONG OPTIONS:
+	To use long options with mount command, start with -o and supply some keywords
+
+	exec,noexec  =Enables/disables execution of programs on the filesystem
+	
+	suid, nosuid  =enables/disables sutuid programs
+
+	ro  =mount the filesystem in read only mode (as does the -r short option)
+
+	rw  =mounts the filesystem in read/write mode
+
+---REMOUNTING A FILESYSTEM------------------------------------------------------
+
+There will be times when you need a read-only filesystem writable during crash recovery.
+The following command remounts root in read-write mode(you need the -n options because mount command cannot write to the system mount database when the root is read only)
+
+	#mount -n -o remount /
+	
+	This command assumes correct device listing for / in /etc/fstab.
+
+	*Linux keeps a permanent list of filesystems and options in /etc/fstab
+
+	$cat /etc/fstab
+	UUID=92c8b117-3ff9-4f28--cut /         xfs     defaults        0 0
+	UUID=e3377545-23c3-4039--cut swap      swap    defaults        0 0
+
+Each line corresponds to one filesystem, and each of which is broken into six fields.
+	1. The device or UUID  =Most Unix systems do not use the device name in /etc/fstab, instead they use the UUID
+	2. the mount point  =indicates where to attach the filesystem
+	3. The filesystem type.
+	4. Options  (use long options separated by commas)
+	5. Backup info for use by the dump command. (should always use 0 for this field)
+	6. Filesystem integrity test order. To ensute that fsck always runs on the root first, always set this to 1, 2 for any other filesystem, use 0 to disable bootcheck.
+
+*You can also mount all entries at once in the /etc/fstab that do not contain the noauto option, like so:
+	#mount -a
+
+
+Here are some options used in the /etc/fstab, that are worth mentioning.
+
+	* defaults  =This used the mount defaults read-write mode , enable device files, 		executable and the setuid bit.
+
+	* noauto  =This option tells a mount -a command to ignore the entry.
+
+	 *user  =This option allows unprivileged user to run mount on a particular entry 		(used to allow cd ROM access.)
+
+
+---ALTERNATIVES TO FSTAB--------------------------------------------------------
+
+*The /etc/fstab file has been the traditional way to represent filesystems and their mount points.
+*The /etc/fstab.d directory contains individual filesystem configuration files (one file for each filesystem), similar idea to many other config directories.
+
+
+
+
+---FILESYSTEM CAPACITY----------------------------------------------------------
+
+To view the size and utilization of your currently mounted filesystems use the df command:
+
+	$df -h (-h --human readable)
+	
+	FILESYSTEM		SIZE	USED	AVAIL	USED MOUNTED ON
+	/dev/sda1        18G   12G  	6.5G  65% 	/
+	tmpfs           376M  1.2M  	375M   1% 	/run/user/42
+
+
+Only the superuser can use the full filesystem space if the rest of the partition fills up. This feature keeps servers from immediately failing when they run out of disk space.
+
+The du command prints the disk usage of every directory in the hierarchy starting with the current directory.
+
+	$du -s *
+	evaluates a particular directory (cd into directory then run)
+
+
+
+---CHECKING AND REPAIRING FILESYSTEMS---
+
+The optimizations of UNIX filesystmes are made possible by a sophisticated database mechanism. For filesystems to work seamlessly, the kernel has to trust that there are no errors in a mounted system ,IF errors exist, data loss and system crashed may result.
+
+The tool to check a filesystem is fsck: When you run fsck on an extended filesystem series(ext2-4), fsck recognizes the filesystem and starts the e2fsck utility. You generally don't need to type e2fsck, unless the fsck can't figure out the filesystem.
+To run fsck in interactive mode, give the device ot the mount point (as listed in /etc/fstab) as the argument.
+
+	#fsck /dev/sdb1
+
+e2fsck has a -p option that automatically fixes ordinary problems without asking and aborts if there's a serious error. Most Linux distros run some variant of fsck -p at boot time.
+
+run fsck -n to check the filesystem without modifying anything
+
+WARNING: You should never use fsck on a mounted filesystem because the kernel may alter the disk data as you run the check,causing run-time mismatches that can crash your system and corrupt files. There is one exception; if you mount the root partition read-only in single user mode, you may use fsck on it.
+
+
+CHECKING ext3 and ext4 filesystems
+
+you normally don;t need to check the ext and ext4 filesystems manually because the journal ensures data integrity. However, you may wish to mount a broken ext3 or ext4 fs in ext2 mode because the kernel will not mount those filesystems with a nonempty journal.
+To flush the journal in an ext3 or ext4 fs to the regular filesystem database run e2fck as follows:
+
+	#e2fck -fy /dev/disk_device
+
+---SPECIAL PURPOSE FILESYSTEMS--------------------------------------------------
+
+Not all filesystem represent storage on a physical media. Most versions of UNIX have filesystems that serve as system interfaces, that is rather than serving only as a means to store data on a device, a filesystem can represent system information such as process ID and kernel diagnostics.
+
+The special filesystem types in common use on Linux include the following.
+
+	*/proc	The name proc is abbreviation of process. Each numbered directory inside /proc is the actual process ID of a current process on the system.
+
+	*sysfs mounted on /sys
+
+	*tmpfs  Mounted on /run and other locations. With tmpfs, you can use your physical memory and swap space as temporary storage.
+
+
+---USING DISK PARTITION AS SWAP SPACE-------------------------------------------
+
+To use an entire disk partition as swap, follow these steps:
+
+	1. make sure the partition is empty.
+	2. Run mkswap dev , (dev is partition's device).This command puts a swap 			signature in the partition.
+	3. execute swapon dev to register the space with the kernel.
+
+After creating a swap partition, you can put the new swap entry in /etc/fstab file to use the swap space as soon as the machine boots.
+
+	e.g. #/dev/sdb1 none swap sw 0 0
+	(keep in mind to use UUID instead of raw device names)
+
+To use a file as swap space (because you can't re-partition drive) do:
+Use these command to create an empty file, initialize it as swap and add it to the swap pool:
+
+	#dd if=/dev/zero of=swap_file bs=1024k count=num_mb
+	#mkswap swap_file
+	#swapon swap_file
+
+(swap_file is the name of new swap file, num_mb is desired size in megabytes)
+To remove a swap partition from the kernel's active pool, use the #swapoff command.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

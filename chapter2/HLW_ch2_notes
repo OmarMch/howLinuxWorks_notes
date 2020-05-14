@@ -1,6 +1,6 @@
-\How Linux works 
 
-Chapter 2 Basic Commands and directory hierarchy.
+
+CHAPTER 2 BASIC COMMANDS AND DIRECTORY HIERARCHY.
 
 2.1
 The shell is one of the most important parts of a Unix system. A shell is a program that runs commands like the ones that users enter. The shell is also a programming environment. 
@@ -24,6 +24,7 @@ If an argument consists of two or more words separated by spaces, then it must b
 
 COMMANDS: 
 echo:	-echo is a built-in command in the bash and C shells that writes its arguments to standard output.
+	
 	$echo $SHELL --> /bin/bash
 
 cat:	-The cat command simply outputs the contents of one or more files, it is called cat because it performs concatenation when it prints the contents of more than one file.
@@ -46,14 +47,15 @@ rm:	-To delete a file, use rm. after you remove it, it's gone from your file sys
 In order to delete directories it is necessary to use the 'r' option or 'R'.This option recursively removes directories and their contents in the argument list.
 
 
-NAVIGATING DIRECTORIES.
+---NAVIGATING DIRECTORIES.------------------------------------------------------
+
 The directory hierarchy of Unix starts at /, sometimes called the root directory. The directory separator is the (/) slash.
 
 When you refer to a file or directory, you specify a path or path-name. When a path starts with / such as /usr/lib, it's a full or absolute path.
 
 A path component identified by (..) two dots specifies the parent of a directory.Eg, if you're working in the /usr/lib, the path .. would refer to /usr.
 
-One dot(.) refers to the current directory. EG, if you're working in the /usr/lib, the path . is still /usr/lib. 
+One dot(.) refers to the current directory. E.G. if you're working in the /usr/lib, the path . is still /usr/lib. 
 
 A path not beginning with / is called a relative path. Most of the time we'll be working with relative path-names, because you'll be already in the directory you need to be.
 
@@ -69,7 +71,8 @@ rmdir:	-the rmdir command removes a directory. If the directory is not empty use
 The -r option specifies recursive, and the -f denotes to force delete operation. ***Don't use the -rf flags with globs such as (*) star, as this is one of the commands that can do serious damage if run as superuser.
 
 
----Globbing and wild-cards.----
+---GLOBBING AND WILD-CARDS.-----------------------------------------------------
+
 Globbing is a feature that helps matching a file and directory names. This is similar to the concept of wild-cards in other systems.
 The simplest of these is the *(glob) character, which tells the shell to match any number of arbitrary characters.
 
@@ -82,13 +85,13 @@ Unix file-names DO NOT need extensions and usually do not carry them.
 
 
 
----Intermediate commands:---
+---INTERMEDIATE COMMANDS:-------------------------------------------------------
 
 grep:	-the grep command prints the lines from a file or input stream that match an expansion. For example to print the lines in the /etc/passwd file that contain "root", enter this;
 	
 	$grep root /etc/passwd
 
-Grep is handy when handling multiple files at once because it prints the file-name in addition to the matching line. EG. to check every file in /etc that contains the word root, you'd use:
+Grep is handy when handling multiple files at once because it prints the file-name in addition to the matching line. E.G. to check every file in /etc that contains the word root, you'd use:
 	$grep root /etc*
 
 grep options that are important are; grep -i (for case-insensitive matches) and -v (which inverts the search, that is prints files that don't match.
@@ -145,7 +148,7 @@ sort:	-the sort command quickly puts the lines of a text in alphanumeric order. 
 
 
 
----Changing your password---
+---CHANGING YOUR PASSWORD-------------------------------------------------------
 
 Use the passwd command to change your password. you'll be asked for your old password and then prompted for the new one twice. 
 
@@ -171,7 +174,8 @@ Dot . files:
 The output of ls -a shows dot files. These are files and directories whose names begin with a dot(.) and are typically hidden files on your system. Common files are .bashrc and .login, and directories such as .ssh.
 
 
----Environment and Shell variables:---
+---ENVIRONMENT AND SHELL VARIABLES:---------------------------------------------
+
 The shell can store temporary  variables called "shell variables", containing the value of text strings. Shell variables are useful for keeping track of values in scripts, and some shell variables control the way the shell behaves.
 
 Environment variable is like a shell variable, but it's not specific to the shell. The main difference is that the operating system passes all your shell's environment variables to programs that the shell runs, whereas shell variables cannot be accessed in the commands you run.
@@ -179,7 +183,8 @@ Environment variable is like a shell variable, but it's not specific to the shel
 Environment variables are useful because many programs read them for configuration and options.
 
 
----The command Path:---
+---THE COMMAND PATH:------------------------------------------------------------
+
 PATH is an environmental variable in Linux and Unix-like systems that tells the shell which directories to search for executable files(ready to run programs) in response to commands issued by and user.
 A user's PATH consists of a series of colon separated absolute paths(an address relative to the root directory), that are stored in plain text files.
 Whenever an user types a command at the command line that is not built into the shell or that does not include its absolute path and then presses enter key, the shell searches through those directories, which constitute the user's search path, until it finds an executable with that name.
@@ -193,33 +198,34 @@ e.g to add a directory dir to the beginning of the path so that the shell looks 
 
 
 
----2.10 Special characters---
+---SPECIAL CHARACTERS------------------------------------------------------
 
 Character	name			uses
 ----------------------------------------------------------------------------------
-*		asterisk/star		regular expression, glob character
-.		dot			current directory, file/hostname delimiter
-!		bang			negation, command history'
-|		pipe			command pipes
-/		forward(/)slash		directory delimiter, search command
-\		backlash(\)		literals, macros(NEVER DIRECTORIES!)
-$		dollar			Variable denotation, end of line
-'		tick,(single quote)	literal strings
-`		backtick, backquote	command substitution
-"		double-quote		semi-literal strings
-^		caret			negation, beginning of line
-~		tilde, squiggle		negations, directory shortcut
-#		hash, pound		comments, preprocessor, substitutions
-[]		square brackets		Ranges
-{}		braces curly brackets	statement blocks, ranges
-_		underscore		cheap sub for a space
+	*		asterisk/star		regular expression, glob character
+	.		dot					current directory, file/hostname delimiter
+	!		bang				negation, command history'
+	|		pipe				command pipes
+	/		forward(/)slash		directory delimiter, search command
+	\		backlash(\)			literals, macros(NEVER DIRECTORIES!)
+	$		dollar				Variable denotation, end of line
+	'		tick,(single quote)	literal strings
+	`		backtick, backquote	command substitution
+	"		double-quote		semi-literal strings
+	^		caret				negation, beginning of line
+	~		tilde, squiggle		negations, directory shortcut
+	#		hash, pound			comments, preprocessor, substitutions
+	[]		square brackets		Ranges
+	{}		curly brackets		statement blocks, ranges
+	_		underscore			cheap sub for a space
 
 
 
----Command line Editing----
+---COMMAND LINE EDITING---------------------------------------------------------
+
 It's a good idea to ditch the arrow keys and learn control sequences instead.
 
-KESTROKE	ACTION
+KEYSTROKE	ACTION
 -----------------------
 CTRL-B		Move the cursor left
 CTRL-F		move the cursor right
@@ -233,7 +239,8 @@ CTRL-K		erase cursor to end of line
 CTRL-Y		paste erased text (example, from CTRL-U)
 
 
----Getting help----
+---GETTING HELP----------------------------------------------------------------
+
 Linux comes with a wealth of documentation. For basic commands, the manual pages (or man pages) will tell you what you need to know. 
 	$man ls
 
@@ -251,8 +258,8 @@ Man pages are referenced by numbered sections. When someone refers to a manual p
 
 List of man sections and their numbers'
 
-SECTION		DESCRIPTION
----------------------------------------------------------------------------
+section:	description:
+------------------------------------------------------------
 1		user commands
 2		system calls
 3		higher level Unix programming library documentation
@@ -283,7 +290,7 @@ To send the standard input of a command to the standard input of another command
 
 
 
---Standard Error---
+---STANDARD ERROR---------------------------------------------------------------
 
 stderr; it's an additional output stream for diagnosis and debugging. 
 You can redirect the standard error if you like. For example, to send standard output to f and standard error to e, use the 2> syntax, like this:
@@ -295,12 +302,13 @@ You can redirect the standard error if you like. For example, to send standard o
 	
 	$ls /fffffffffffff f 2>&1
 
-Input redirection:
+INPUT REDIRECTION:
 To channel a file to a program's standard input, use the < operator.
 	$head < /proc/cpuinfo
 
 
----2.15 Anatomy of an UNIX error message---
+---2.15 ANATOMY OF AN UNIX ERROR MESSAGE----------------------------------------
+
 Most Unix programs generate and report the same basic error messages, here's an example that we'll dissect:
 
 	$ls /dsafsda
@@ -316,7 +324,7 @@ Putting it together, you get something like, "ls" tried to open /dsafsda but cou
 When troubleshooting errors, always address the first error first. 
 
 
----Common errors-------
+---COMMON ERRORS----------------------------------------------------------------
 
 No such file or directory: 
 This is the number one error. You tried to access a file that doesn't exists. You get it when you try to read a file that does not exists, try to change a dir that isn't there, when you try to write to a file in a directory that doesn't exists, and so on...
@@ -326,25 +334,27 @@ You probably tried to create a file that already exists. This is common when you
 
 Not a directory, ls a directory:
 These messages pop up when you try to use a file as a directory or a directory as a file. for example.
+	
 	$touch a
 	$touch a/b
 	touch: a/b: Not a directory
 	
 	The error message only applies to the a part of a/b. When encountered. find the path component that is being treated like a directory.
 
-No space left on device: You're out of space!
+	No space left on device: You're out of space!
 
-Permission denied:
-You get this error when you attempt to read or write to a file or directory that you're not allowed to access. This error also shows when you try to execute a file that does not have the execute bit.
+	Permission denied:
+	You get this error when you attempt to read or write to a file or directory that you're not allowed to access. This error also shows when you try to execute a file that does not have the execute bit.
 
-Operation not permitted:
-This usually happens when you try to kill a process you don't own.
+	Operation not permitted:
+	This usually happens when you try to kill a process you don't own.
 
-Segmentation fault, Bus error:
-This error essentially means a bug in the program. The program tried to access a part of memory that is was not allowed to touch, and the operating system touched it. Similarly, a bus error means that the program tried to access some memory in a particular way that it shouldn't.
+	Segmentation fault, Bus error:
+	This error essentially means a bug in the program. The program tried to access a part of memory that is was not allowed to touch, and the operating system touched it. Similarly, a bus error means that the program tried to access some memory in a particular way that it shouldn't.
 
 
----Listing and manipulating Processes---
+---LISTING AND MANIPULATING PROCESSES-------------------------------------------
+
 Recall that a process is a running program. Each process on the system has a numeric process ID(PID). For a list of running processes, just run the ps command.
 
 	$ps
@@ -361,19 +371,19 @@ The fields are as follows:
 
 
 Command options
-ps command options:
 
+ps command options:
 ps x	-show all of your running processes
 ps ax	-show all the process on the system, not just the ones you own.
 ps u	-Include more detailed information on the process
 ps w	-Show full command names, not just what fits on one line.
-
 ps u $$	-to inspect the current shell process, $$ evaluates to the current shell's PID.
 
 To locate the PID of processes use top and the lsof commands.
 
 
---Killing processes---
+---KILLING PROCESSES------------------------------------------------------------
+
 To terminate a process, send it a signal with the kill command. A signal is a message to a process from the kernel. When you run kill, you're asking the kernel to send a signal to another process. In most cases, all you need to do is this.
 	
 	$kill pid
@@ -390,7 +400,7 @@ NOTE: Using CTRL-C to terminate a process that is running in the current termina
 The most brutal way to terminate a process is with the KILL signal. Other signals give a chance to clean up after itself, but KILLS does not. The OS terminates the process and forcibly removes it from memory. Use this as last resort.
 
 
----Background processes---
+---BACKGROUND PROCESSES---------------------------------------------------------
 
 To get a shell prompt back while another program is busy executing, use the ampersand(&); this detaches the process from the shell and put it int he "background"
 
@@ -400,7 +410,7 @@ If a program freezes you can try (fg) to bring it back or terminate.
 Use CTRL-L to redraw the screen.
 
 
----File modes and permissions---
+---FILE MODES AND PERMISSIONS---------------------------------------------------
 
 Every Unix system has a set of permissions that decide whether you can read, write or run the file. $ls -l displays the permissions.
 
@@ -408,7 +418,7 @@ Every Unix system has a set of permissions that decide whether you can read, wri
 
 The file's mode represents the file's permissions, and some extra info. There are four parts to the mode.
 
-1. The first character is the file type. A dash(-) denotes a regulat file. Directories are denoted by (d). (There are other file types discussed in Device files chapter)
+1. The first character is the file type. A dash(-) denotes a regular file. Directories are denoted by (d). (There are other file types discussed in Device files chapter)
 The rest of the file's mode contain the permissions, which break down into: User, Group and other, IN THAT ORDER.
 
 	The rw- are the user permissions
@@ -417,7 +427,7 @@ The rest of the file's mode contain the permissions, which break down into: User
 
 ----------------------------------------------------------------
 r	-Means the file is readable
------------------------------------------------------------------
+----------------------------------------------------------------
 w	-File is writable
 x	-Means the file is executable (you can run as a program)
 -	-means nothing
@@ -425,7 +435,7 @@ x	-Means the file is executable (you can run as a program)
 Everyone else on the system has access according to the third set, The "Other" permissions set is also called world permissions.
 
 Some executable files have an s in the user permissions listing instead of an x. This indicates the executable is setuid; meaning that when you execute the program, it runs as though the file owner is the user instead of you.
-Many programs use this setid bit to run as root in order to get the privileges that need to change system files.
+Many programs use this setuid bit to run as root in order to get the privileges that need to change system files.
 
 
 ----Modifying permissions----
@@ -468,7 +478,7 @@ Most common absolute set bits:
 711	111-001-001	rwx --x --x	u:r/w/x	g:x	o:x
 
 
-NOte:  644,600 are used for files, 755, 700 are used for directories and programs and 711 is used for directories.
+Note:  644,600 are used for files, 755, 700 are used for directories and programs and 711 is used for directories.
 
 Terms:
 r: read
@@ -501,7 +511,7 @@ unmask Octal Value	File permissions	Dir permissions
 Eg. umask 000 sets the file permissions to rw- rw- rw-
 
 
----Creating symbolic links---
+---CREATING SYMBOLIC LINKS------------------------------------------------------
 
 A symbolic link is a file that points to another file or directory, effectively creating an alias (like a shortcut in Windows.
 
@@ -513,13 +523,13 @@ If you try to access link_to_nine, the system give you sub_dir9 instead. Symboli
 
 Note: your system might have links that point to other links, which are called chained symbolic links.
 
---To create a symolic links from target to linkname, use $ln -s
+To create a symbolic links from target to linkname, use $ln -s
 
 	$ln -s target linkname
 
 The link-name argument is the name of the symbolic link, the target argument is the path of the file or directory the link points to, and the -s flag specifies a symbolic link.
 
-Warning: Don't forget the -s option when creating symbolic links, otherwise the system creates a hardlink, giving an additional real name to a single file. THe new file-name has the status of the old one; it points links directly to the file instead of to another file-name as a symbolic link does.
+Warning: Don't forget the -s option when creating symbolic links, otherwise the system creates a hardlink, giving an additional real name to a single file. The new file-name has the status of the old one; it points links directly to the file instead of to another file-name as a symbolic link does.
 
 Why would one use symbolic links?
 
@@ -528,7 +538,7 @@ Why would one use symbolic links?
 *To move data off your main drive. to, say another drive without disrupting system or app functions.
 
 
----Archiving and Compressing files---
+---ARCHIVING AND COMPRESSING FILES----------------------------------------------
 
 gzip:	- (GNU ZIP) is one of the current standard Unix compression programs.
 
@@ -563,7 +573,7 @@ To unpack a compressed(.gz) archive, work from the right side to the left, get r
 
 ---zcat:
 
-THe above method isn't the fastest or the most efficient way to invoke tar on an uncompressed archive, and wastes kernel I/O time and disk space.
+The above method isn't the fastest or the most efficient way to invoke tar on an uncompressed archive, and wastes kernel I/O time and disk space.
 Better way is to combine archival and compression functions with a pipeline. as follows:
 	$zcat file tar.gz | tar xvf -
 
@@ -575,7 +585,7 @@ for example:
 Most Linux distributions come with zip and unzip programs that are compatible with the zip archives on Windows systems. 
 
 
-----Linux directory essentials
+----LINUX DIRECTORY ESSENTIALS--------------------------------------------------
 
 The Filesystem Hierarchy Standard (FHS) defines the directory structure and directory contents in Linux distributions.
 IN FHS, all files and directories appear under the root directory /, even if they are stored on different physical or virtual devices. 
@@ -603,7 +613,7 @@ Most of these directories exist in all Unix-like operating systems and are gener
 └── var
 
 DIRECTORY			DESCRIPTION
--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 / 	-Primary hierarchy root and root directory of the ENTIRE file system hierarchy
 
 /bin	-Essential command binaries that need to be available in single user mode; for all users e.g, cat, ls, cp					
@@ -645,14 +655,14 @@ DIRECTORY			DESCRIPTION
 /var	-Variable files -files whose contend is expected to continually change during normal operation of the system --such as logs, spools files, and temporary e-mail files.
 
 
----Kernel Location---
+---KERNEL LOCATION--------------------------------------------------------------
 
 On most Linux systems, the kernel is normally in /vmlinuz or /boot/vmlinuz. A boot loader loads this file into memory and sets it in motion when the system boots.
 Once the boot loader runs and sets the kernel in motion, the main kernel file is no longer used by the running system. However, you'll find many modules that the kernel can load and unload on demand during the course of normal system operation. Called "loadable kernel modules". they are located under /lib/modules.
 
 
 
----Running commands as the Superuser---
+---RUNNING COMMANDS AS THE SUPERUSER--------------------------------------------
 
 You should know how to run commands as the superuser. For this you can use the su command and enter the root password to start a root shell. This practice works, but it has certain disadvantages:
 	*You have no record of system-altering commands
@@ -669,7 +679,7 @@ Most distributions use a package called sudo to allow administrators to run comm
 When you run this commands, sudo logs this action with the syslog service under the local2 facility. (See chapter7 for system logs)
 
 
----/etc/sudoers---
+---/etc/sudoers-----------------------------------------------------------------
 
 The system doesn't let just any user run commands as the superuser; you must configure the privileged users in your /etc/sudoers file.
 e.g, this file gives user1 and user2 the power to run any command as root without having to enter a password:
@@ -682,7 +692,7 @@ e.g, this file gives user1 and user2 the power to run any command as root withou
 
 The first line defines ADMINS user alias with the two users.
 
-THe second line grants the privileges. ALL = NOPASSWD part means the users in the ADMINS alias can use sudo to execute commands as root. The first ALL means any host, the first ALL means "any command".
+The second line grants the privileges. ALL = NOPASSWD part means the users in the ADMINS alias can use sudo to execute commands as root. The first ALL means any host, the first ALL means "any command".
 
 The third line means that the superuser may also use sudo to run any command on any host. The extra (ALL) means that the superuser may also run commands as any other user.
 
@@ -694,5 +704,5 @@ Note: Use visudo command to edit /etc/sudoers. This command checks for file synt
 
 
 
-:w
+
 
